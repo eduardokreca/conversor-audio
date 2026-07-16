@@ -1,0 +1,99 @@
+name: Build Desktop Apps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências Python
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install tkinterdnd2 pyinstaller pillow
+
+      - name: Baixar ffmpeg (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -OutFile ffmpeg.zip
+          Expand-Archive ffmpeg.zip -DestinationPath ffmpeg_extract
+          $exe = Get-ChildItem -Path ffmpeg_extract -Filter ffmpeg.exe -Recurse | Select-Object -First 1
+          Copy-Item $exe.FullName -Destination ffmpeg.exe
+
+      - name: Instalar ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+
+      - name: Gerar ícone .icns (macOS)
+        if: runner.os == 'macOS'
+        run: python3 -c "from PIL import Image; Image.open('app_icon_1024.png').save('app_icon.icns')"
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python -m PyInstaller --onefile --windowed `
+            --name "ConversorAudio" `
+            --icon "app_icon.ico" `
+            --add-binary "ffmpeg.exe;." `
+            --add-binary "app_icon.ico;." `
+            --add-binary "app_icon.png;." `
+            conversor_audio.py
+
+      - name: Build (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          FFMPEG_BIN=$(which ffmpeg)
+          python3 -m PyInstaller --onefile --windowed \
+            --name "ConversorAudio" \
+            --icon "app_icon.icns" \
+            --add-binary "$FFMPEG_BIN:." \
+            --add-binary "app_icon.png:." \
+            conversor_audio.py
+
+      - name: Empacotar (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path dist\ConversorAudio.exe -DestinationPath dist\ConversorAudio-windows.zip
+
+      - name: Empacotar (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          zip -r ConversorAudio-mac.zip ConversorAudio.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ConversorAudio-${{ runner.os }}
+          path: dist/ConversorAudio-*.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: "Última versão"
+          make_latest: true
+          files: artifacts/*.zip
