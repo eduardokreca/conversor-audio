@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conversor WAV ⇄ MP3</title>
+<meta name="description" content="Conversor de áudio WAV ⇄ MP3 com conversão automática, qualidade profissional (320kbps / 24-bit 48kHz) e codec nativo — grátis, sem instalação, para Windows e Mac.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Conversor WAV ⇄ MP3">
+<meta property="og:description" content="Conversão automática, qualidade profissional (320kbps / 24-bit 48kHz), codec nativo — grátis, sem instalação, para Windows e Mac.">
+<meta property="og:image" content="https://eduardokreca.github.io/conversor-audio/assets/preview.png">
+<meta property="og:url" content="https://eduardokreca.github.io/conversor-audio/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Conversor WAV ⇄ MP3">
+<meta name="twitter:description" content="Conversão automática, qualidade profissional, grátis, para Windows e Mac.">
+<meta name="twitter:image" content="https://eduardokreca.github.io/conversor-audio/assets/preview.png">
+
+<link rel="icon" href="assets/app_icon.png">
+
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #1c64c8 0%, #5a46c8 100%);
+    color: #fff;
+  }
+  .card {
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+  }
+  .icon {
+    width: 128px;
+    height: 128px;
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-size: 2.2rem;
+    margin: 0 0 12px;
+    font-weight: 700;
+  }
+  p.subtitle {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.85);
+    margin: 0 0 32px;
+    line-height: 1.5;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+  .badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+  }
+  .downloads {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: #2b3a67;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 28px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    transition: transform 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.secondary {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  .note {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+  .note a { color: #fff; }
+  footer {
+    margin-top: 40px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="icon" src="assets/app_icon.png" alt="Ícone do Conversor WAV MP3">
+    <h1>Conversor WAV ⇄ MP3</h1>
+    <p class="subtitle">Arraste, converta, pronto. Conversão automática entre WAV e MP3 com qualidade de estúdio — sem precisar abrir o Pro Tools.</p>
+
+    <div class="badges">
+      <span class="badge">MP3 320 kbps</span>
+      <span class="badge">WAV 24-bit / 48 kHz</span>
+      <span class="badge">Codec nativo</span>
+      <span class="badge">Grátis</span>
+    </div>
+
+    <div class="downloads">
+      <a class="btn" href="https://github.com/eduardokreca/conversor-audio/releases/latest/download/ConversorAudio-windows.zip">🪟 Baixar para Windows</a>
+      <a class="btn secondary" href="https://github.com/eduardokreca/conversor-audio/releases/latest/download/ConversorAudio-mac.zip">🍎 Baixar para Mac</a>
+    </div>
+
+    <p class="note">
+      No Mac, na primeira abertura: clique com o botão direito no app → <strong>Abrir</strong>.<br>
+      Código fonte em <a href="https://github.com/eduardokreca/conversor-audio">github.com/eduardokreca/conversor-audio</a>.
+    </p>
+
+    <footer>Freeware by @eduardokreca</footer>
+  </div>
+</body>
+</html>
