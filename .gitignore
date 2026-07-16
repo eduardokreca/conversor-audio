@@ -1,0 +1,7 @@
+build/
+dist/
+__pycache__/
+py312_build/
+*.spec
+ffmpeg.exe
+.conversor_audio_config.json
