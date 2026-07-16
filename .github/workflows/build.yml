@@ -3,6 +3,10 @@ name: Build Desktop Apps
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "index.html"
+      - "assets/preview.png"
+      - "**.md"
   workflow_dispatch:
 
 permissions:
