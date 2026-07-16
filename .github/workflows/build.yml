@@ -64,6 +64,7 @@ jobs:
           python3 -m PyInstaller --onefile --windowed \
             --name "ConversorAudio" \
             --icon "app_icon.icns" \
+            --target-architecture x86_64 \
             --add-binary "$FFMPEG_BIN:." \
             --add-binary "app_icon.png:." \
             conversor_audio.py
