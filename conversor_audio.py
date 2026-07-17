@@ -100,6 +100,10 @@ class ConversorApp:
         self.output_entry.pack(side="left", fill="x", expand=True, padx=6)
         ttk.Button(top, text="Escolher...", command=self.choose_output).pack(side="left")
 
+        if HAS_DND:
+            self.output_entry.drop_target_register(DND_FILES)
+            self.output_entry.dnd_bind("<<Drop>>", self.on_drop_output)
+
         mode_frame = ttk.Frame(self.root, padding=(10, 0))
         mode_frame.pack(fill="x")
         ttk.Label(mode_frame, text="Modo:").pack(side="left")
@@ -241,6 +245,16 @@ class ConversorApp:
         folder = filedialog.askdirectory()
         if folder:
             self.output_dir.set(folder)
+
+    def on_drop_output(self, event):
+        paths = self.root.tk.splitlist(event.data)
+        if not paths:
+            return
+        path = paths[0]
+        if os.path.isdir(path):
+            self.output_dir.set(path)
+        elif os.path.isfile(path):
+            self.output_dir.set(os.path.dirname(path))
 
     def add_files(self):
         paths = filedialog.askopenfilenames(
