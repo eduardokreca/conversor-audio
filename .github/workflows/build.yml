@@ -29,7 +29,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Instalar dependências Python
+      - name: Instalar dependências Python (Windows)
+        if: runner.os == 'Windows'
         run: |
           python -m pip install --upgrade pip
           python -m pip install tkinterdnd2 pyinstaller pillow
@@ -43,13 +44,32 @@ jobs:
           $exe = Get-ChildItem -Path ffmpeg_extract -Filter ffmpeg.exe -Recurse | Select-Object -First 1
           Copy-Item $exe.FullName -Destination ffmpeg.exe
 
-      - name: Instalar ffmpeg (macOS)
+      - name: Instalar Rosetta (macOS)
         if: runner.os == 'macOS'
-        run: brew install ffmpeg
+        run: softwareupdate --install-rosetta --agree-to-license || true
+
+      - name: Instalar Python universal2 (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          curl -o python.pkg https://www.python.org/ftp/python/3.12.10/python-3.12.10-macos11.pkg
+          sudo installer -pkg python.pkg -target /
+          echo "PY_MAC=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3" >> $GITHUB_ENV
+
+      - name: Instalar Homebrew x86_64 + ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          arch -x86_64 /usr/local/bin/brew install ffmpeg
+
+      - name: Instalar dependências Python x86_64 (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          arch -x86_64 $PY_MAC -m pip install --upgrade pip
+          arch -x86_64 $PY_MAC -m pip install tkinterdnd2 pyinstaller pillow
 
       - name: Gerar ícone .icns (macOS)
         if: runner.os == 'macOS'
-        run: python3 -c "from PIL import Image; Image.open('app_icon_1024.png').save('app_icon.icns')"
+        run: arch -x86_64 $PY_MAC -c "from PIL import Image; Image.open('app_icon_1024.png').save('app_icon.icns')"
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
@@ -68,14 +88,17 @@ jobs:
         env:
           MACOSX_DEPLOYMENT_TARGET: "10.15"
         run: |
-          FFMPEG_BIN=$(which ffmpeg)
-          python3 -m PyInstaller --onefile --windowed \
+          arch -x86_64 $PY_MAC -m PyInstaller --onefile --windowed \
             --name "ConversorAudio" \
             --icon "app_icon.icns" \
             --target-architecture x86_64 \
-            --add-binary "$FFMPEG_BIN:." \
+            --add-binary "/usr/local/bin/ffmpeg:." \
             --add-binary "app_icon.png:." \
             conversor_audio.py
+
+      - name: Re-assinar app (macOS)
+        if: runner.os == 'macOS'
+        run: codesign --force --deep --sign - "dist/ConversorAudio.app"
 
       - name: Empacotar (Windows)
         if: runner.os == 'Windows'
