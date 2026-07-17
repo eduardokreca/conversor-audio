@@ -55,11 +55,13 @@ jobs:
           sudo installer -pkg python.pkg -target /
           echo "PY_MAC=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3" >> $GITHUB_ENV
 
-      - name: Instalar Homebrew x86_64 + ffmpeg (macOS)
+      - name: Baixar ffmpeg estático x86_64 (macOS)
         if: runner.os == 'macOS'
         run: |
-          arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          arch -x86_64 /usr/local/bin/brew install ffmpeg
+          curl -L "https://evermeet.cx/ffmpeg/getrelease/zip" -o ffmpeg.zip
+          unzip -o -j ffmpeg.zip -d ffmpeg_bin
+          chmod +x ffmpeg_bin/ffmpeg
+          echo "FFMPEG_MAC=$(pwd)/ffmpeg_bin/ffmpeg" >> $GITHUB_ENV
 
       - name: Instalar dependências Python x86_64 (macOS)
         if: runner.os == 'macOS'
@@ -92,7 +94,7 @@ jobs:
             --name "ConversorAudio" \
             --icon "app_icon.icns" \
             --target-architecture x86_64 \
-            --add-binary "/usr/local/bin/ffmpeg:." \
+            --add-binary "$FFMPEG_MAC:." \
             --add-binary "app_icon.png:." \
             conversor_audio.py
 
